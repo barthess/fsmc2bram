@@ -22,11 +22,12 @@ end entity ram_addr_test;
 
 
 architecture rtl of ram_addr_test is
-signal addr_cnt : std_logic_vector (15 downto 0);
+  signal addr_cnt : std_logic_vector (15 downto 0);
 begin
 	BRAM_CLK <= clk_i;
   BRAM_EN  <= '1';
   
+  --
   process(clk_i) is
 	begin
     if rising_edge(clk_i) then
@@ -38,6 +39,7 @@ begin
     end if;
 	end process;
   
+  --
 	process(clk_i) is
 	begin
     if rising_edge(clk_i) then
