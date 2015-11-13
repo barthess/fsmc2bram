@@ -20,6 +20,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use IEEE.std_logic_misc.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -84,9 +85,9 @@ end fsmc2bram;
 architecture beh of fsmc2bram is
 
 type state_t is (IDLE, ADDR, WRITE1, READ1);
-signal state : state_t := IDLE;
 
-signal a_cnt : STD_LOGIC_VECTOR (AWUSED-1 downto 0) := (others => '0');
+  signal state : state_t := IDLE;
+  signal a_cnt : STD_LOGIC_VECTOR (AWUSED-1 downto 0) := (others => '0');
 
 begin
 
@@ -97,7 +98,7 @@ begin
   -- coonect 3-state data bus
   D <= bram_di when (NCE = '0' and NOE = '0') else (others => 'Z');
   bram_do <= D;
-
+  
   -- main process
   process(fsmc_clk, NCE) begin
     if (NCE = '1') then

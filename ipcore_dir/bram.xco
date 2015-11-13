@@ -1,7 +1,7 @@
 ##############################################################
 #
 # Xilinx Core Generator version 14.7
-# Date: Tue Nov 10 07:21:40 2015
+# Date: Fri Nov 13 06:50:16 2015
 #
 ##############################################################
 #
@@ -79,7 +79,7 @@ CSET read_width_b=16
 CSET register_porta_input_of_softecc=false
 CSET register_porta_output_of_memory_core=false
 CSET register_porta_output_of_memory_primitives=false
-CSET register_portb_output_of_memory_core=false
+CSET register_portb_output_of_memory_core=true
 CSET register_portb_output_of_memory_primitives=false
 CSET register_portb_output_of_softecc=false
 CSET remaining_memory_locations=0
@@ -105,4 +105,4 @@ CSET write_width_b=16
 MISC pkg_timestamp=2012-11-19T16:22:25Z
 # END Extra information
 GENERATE
-# CRC: b6d96c4f
+# CRC: 94e91a06

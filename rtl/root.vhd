@@ -54,9 +54,10 @@ entity root is
     STM_IO_MUL_DV  : in std_logic;
     STM_IO_MMU_INT : out std_logic;
     STM_IO_FPGA_READY : out std_logic;
+    STM_IO_OLD_FSMC_CLK : in std_logic;
     
-    DEV_NULL_BANK1 : out std_logic -- warning suppressor
-    --DEV_NULL_BANK0 : out std_logic -- warning suppressor
+    DEV_NULL_BANK1 : out std_logic; -- warning suppressor
+    DEV_NULL_BANK0 : out std_logic -- warning suppressor
 	);
 end root;
 
@@ -102,7 +103,7 @@ begin
 
   ram_addr_test : entity work.ram_addr_test
   port map (
-    clk_i    => clk_90mhz,
+    clk_i    => clk_180mhz,
 
     BRAM_FILL => STM_IO_MUL_DV,
     BRAM_DBG  => STM_IO_MUL_RDY,
@@ -160,7 +161,8 @@ begin
       clkb  => wire_memtest_clk
     );
     
-
+  DEV_NULL_BANK0 <= STM_IO_OLD_FSMC_CLK;
+  
 	-- raize ready flag
 	STM_IO_FPGA_READY <= not clk_locked;
 
