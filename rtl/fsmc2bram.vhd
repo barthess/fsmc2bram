@@ -54,8 +54,7 @@ entity fsmc2bram is
     bram_do  : out STD_LOGIC_VECTOR (DW-1 downto 0);
     bram_ce  : out STD_LOGIC;
     bram_we  : out STD_LOGIC_VECTOR (0 downto 0);
-    bram_clk : out std_logic;
-    bram_asample : out STD_LOGIC
+    bram_clk : out std_logic
   );
   
 
@@ -85,7 +84,7 @@ end fsmc2bram;
 
 architecture beh of fsmc2bram is
 
-type state_t is (IDLE, ADDR, WRITE1, READ1);
+type state_t is (IDLE, WRITE0, WRITE1, READ0);
 
   signal state : state_t := IDLE;
   signal a_cnt : STD_LOGIC_VECTOR (AWUSED-1 downto 0) := (others => '0');
@@ -112,23 +111,24 @@ begin
       case state is
       
       when IDLE =>
-        if (NCE = '0') then 
-          a_cnt <= address2cnt(A) - 1;
-          bram_asample <= '1';
+        if (NCE = '0') then
           mmu_int <= mmu_check(A, NBL);
-          state <= ADDR;
-        end if;
-        
-      when ADDR =>
-        bram_asample <= '0';
-        if (NWE = '0') then
-          state <= WRITE1;
-        else
-          state <= READ1;
-          bram_ce <= '1';
-          a_cnt <= a_cnt + 1;
+          if (NWE = '0') then
+            a_cnt <= address2cnt(A) - 1;
+            state <= WRITE0;
+          else
+            state <= READ0;
+            bram_ce <= '1';
+            a_cnt <= address2cnt(A);
+          end if;
         end if;
 
+      when READ0 =>
+        a_cnt <= a_cnt + 1;
+
+      when WRITE0 =>
+        state <= WRITE1;
+  
       when WRITE1 =>
         bram_ce <= '1';
         if USENBL = '1' then
@@ -136,9 +136,6 @@ begin
         else
           bram_we <= "1";
         end if;
-        a_cnt <= a_cnt + 1;
-
-      when READ1 =>
         a_cnt <= a_cnt + 1;
 
       end case;

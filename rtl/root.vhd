@@ -37,7 +37,8 @@ use ieee.std_logic_misc.all;
 entity root is
   generic (
     FSMC_A_WIDTH : positive := 23;
-    FSMC_D_WIDTH : positive := 16
+    FSMC_D_WIDTH : positive := 16;
+    FSMC_A_USED  : positive := 18
   );
   port ( 
     CLK_IN_27MHZ : in std_logic;
@@ -70,7 +71,7 @@ signal clk_360mhz : std_logic;
 signal clk_locked : std_logic;
 
 -- wires for memspace to fsmc
-signal wire_bram_a   : std_logic_vector (15 downto 0); 
+signal wire_bram_a   : std_logic_vector (FSMC_A_USED-1  downto 0); 
 signal wire_bram_di  : std_logic_vector (FSMC_D_WIDTH-1 downto 0); 
 signal wire_bram_do  : std_logic_vector (FSMC_D_WIDTH-1 downto 0); 
 signal wire_bram_ce  : std_logic; 
@@ -79,7 +80,7 @@ signal wire_bram_clk : std_logic;
 signal wire_bram_asample : std_logic; 
 
 -- wires for memory filler
-signal wire_memtest_a    : std_logic_vector (15 downto 0); 
+signal wire_memtest_a    : std_logic_vector (FSMC_A_USED-1 downto 0); 
 signal wire_memtest_di   : std_logic_vector (15 downto 0); 
 signal wire_memtest_do   : std_logic_vector (15 downto 0); 
 signal wire_memtest_ce   : std_logic;
@@ -102,8 +103,11 @@ begin
 
 
   ram_addr_test : entity work.ram_addr_test
+  generic map (
+    AW => FSMC_A_USED
+  )
   port map (
-    clk_i    => clk_180mhz,
+    clk_i    => clk_90mhz,
 
     BRAM_FILL => STM_IO_MUL_DV,
     BRAM_DBG  => STM_IO_MUL_RDY,
@@ -121,7 +125,7 @@ begin
       AW => FSMC_A_WIDTH,
       DW => FSMC_D_WIDTH,
       USENBL => '0',
-      AWUSED => 16
+      AWUSED => FSMC_A_USED
     )
     port map (
       fsmc_clk => FSMC_CLK,
@@ -139,8 +143,7 @@ begin
       bram_do  => wire_bram_di,
       bram_ce  => wire_bram_ce,
       bram_we  => wire_bram_we,
-      bram_clk => wire_bram_clk,
-      bram_asample => DEV_NULL_BANK1
+      bram_clk => wire_bram_clk
     );
     
   bram_test : entity work.bram
@@ -163,7 +166,8 @@ begin
     );
     
   DEV_NULL_BANK0 <= STM_IO_OLD_FSMC_CLK;
-  
+  DEV_NULL_BANK1 <= '1';
+
 	-- raize ready flag
 	STM_IO_FPGA_READY <= not clk_locked;
 

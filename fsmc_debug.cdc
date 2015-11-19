@@ -1,5 +1,5 @@
 #ChipScope Core Inserter Project File Version 3.0
-#Wed Nov 11 10:37:05 EET 2015
+#Thu Nov 19 15:36:33 EET 2015
 Project.device.designInputFile=/home/barthess/projects/xilinx/fsmc2bram/root_cs.ngc
 Project.device.designOutputFile=/home/barthess/projects/xilinx/fsmc2bram/root_cs.ngc
 Project.device.deviceFamily=18
@@ -14,7 +14,7 @@ Project.icon.enableExtTriggerOut=false
 Project.icon.triggerInPinName=
 Project.icon.triggerOutPinName=
 Project.unit.dimension=1
-Project.unit<0>.clockChannel=clk_180mhz
+Project.unit<0>.clockChannel=clk_90mhz
 Project.unit<0>.clockEdge=Rising
 Project.unit<0>.dataChannel<0>=FSMC_A_22_IBUF
 Project.unit<0>.dataChannel<10>=FSMC_A_12_IBUF
