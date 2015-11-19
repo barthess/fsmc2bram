@@ -120,6 +120,7 @@ begin
     generic map (
       AW => FSMC_A_WIDTH,
       DW => FSMC_D_WIDTH,
+      USENBL => '0',
       AWUSED => 16
     )
     port map (

@@ -35,6 +35,7 @@ entity fsmc2bram is
   Generic (
     AW : positive; -- total FSMC address width
     DW : positive; -- data witdth
+    USENBL : std_logic;
     AWUSED : positive -- actually used address lines
   );
 	Port (
@@ -130,8 +131,11 @@ begin
 
       when WRITE1 =>
         bram_ce <= '1';
-        --bram_we <= not NBL;
-        bram_we <= "1";
+        if USENBL = '1' then
+          bram_we <= not NBL;
+        else
+          bram_we <= "1";
+        end if;
         a_cnt <= a_cnt + 1;
 
       when READ1 =>
