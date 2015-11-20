@@ -38,7 +38,7 @@ entity root is
   generic (
     FSMC_A_WIDTH : positive := 23;
     FSMC_D_WIDTH : positive := 16;
-    FSMC_A_USED  : positive := 18
+    FSMC_A_USED  : positive := 16
   );
   port ( 
     CLK_IN_27MHZ : in std_logic;
