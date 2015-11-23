@@ -35,7 +35,7 @@ entity fsmc2bram is
   Generic (
     AW : positive; -- total FSMC address width
     DW : positive; -- data witdth
-    USENBL : std_logic;
+    USENBL : std_logic; -- set to '1' if you want NBL (byte select) pin support
     AWUSED : positive -- actually used address lines
   );
 	Port (
@@ -106,7 +106,7 @@ begin
       bram_we <= "0";
       mmu_int <= '0';
       state <= IDLE;
-      
+
     elsif rising_edge(fsmc_clk) then
       case state is
       
