@@ -69,7 +69,7 @@ entity fsmc2bram is
                      NBL : in std_logic_vector(1 downto 0)) 
                      return std_logic is
   begin
-    if (A(AW-1 downto AWUSED) /= 0) or (NBL(0) /= NBL(1)) then
+    if (A(AW-1 downto AWUSED) /= 0) or ((NBL(0) /= NBL(1) and USENBL = '0')) then
       return '1';
     else
       return '0';
