@@ -49,7 +49,7 @@ entity root is
     FSMC_NOE : in std_logic;
     FSMC_NWE : in std_logic;
     FSMC_NCE : in std_logic;
-    FSMC_CLK : in std_logic;
+    --FSMC_CLK : in std_logic;
     
     STM_IO_MUL_RDY : out std_logic;
     STM_IO_MUL_DV  : in std_logic;
@@ -65,9 +65,9 @@ end root;
 
 architecture Behavioral of root is
 
-signal clk_90mhz  : std_logic;
-signal clk_180mhz : std_logic;
-signal clk_360mhz : std_logic;
+signal clk_180mhz  : std_logic;
+signal clk_150mhz : std_logic;
+signal clk_130mhz : std_logic;
 signal clk_locked : std_logic;
 
 -- wires for memspace to fsmc
@@ -94,9 +94,9 @@ begin
 	clk_src : entity work.clk_src port map (
 		CLK_IN1  => CLK_IN_27MHZ,
     
-  	CLK_OUT1 => clk_90mhz,
-		CLK_OUT2 => clk_180mhz,
-		CLK_OUT3 => clk_360mhz,
+  	CLK_OUT1 => clk_180mhz,
+		CLK_OUT2 => clk_150mhz,
+		CLK_OUT3 => clk_130mhz,
     
 		LOCKED   => clk_locked
 	);
@@ -107,7 +107,7 @@ begin
     AW => FSMC_A_USED
   )
   port map (
-    clk_i    => clk_90mhz,
+    clk_i     => clk_130mhz,
 
     BRAM_FILL => STM_IO_MUL_DV,
     BRAM_DBG  => STM_IO_MUL_RDY,
@@ -120,7 +120,7 @@ begin
     BRAM_WE  => wire_memtest_we   -- memory write enable
   );
 
-  fsmc2bram : entity work.fsmc2bram 
+  fsmc2bram : entity work.fsmc2bram_async 
     generic map (
       AW => FSMC_A_WIDTH,
       DW => FSMC_D_WIDTH,
@@ -128,7 +128,8 @@ begin
       AWUSED => FSMC_A_USED
     )
     port map (
-      fsmc_clk => FSMC_CLK,
+      --clk => FSMC_CLK,
+      clk => clk_180mhz,
       mmu_int => STM_IO_MMU_INT,
       
       A   => FSMC_A,
