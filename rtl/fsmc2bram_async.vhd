@@ -91,14 +91,11 @@ end fsmc2bram_async;
 
 architecture beh of fsmc2bram_async is
 
-type state_t is (IDLE, ADSET, FLUSH);
+type state_t is (IDLE, FLUSH);
 
   signal state : state_t := IDLE;
   signal a_reg : STD_LOGIC_VECTOR (AWUSED-1 downto 0);
   signal d_reg : STD_LOGIC_VECTOR (DW-1 downto 0); 
-  signal nbl_reg : STD_LOGIC_VECTOR (1 downto 0); 
-  signal nce_reg : STD_LOGIC:= '1';
-  signal noe_reg : STD_LOGIC:= '1';
   -- shiftregister for low-to-high detection
   signal nwe_reg : STD_LOGIC_VECTOR (1 downto 0) := "11";
 
@@ -106,53 +103,56 @@ begin
 
   -- connect permanent signals
   bram_clk <= clk;
-
-  -- coonect 3-state data bus
+  
+  -- connect registered data and address buses
+  bram_do  <= d_reg;
+  bram_a   <= a_reg;
+  
+  -- connect 3-state data bus
   D <= bram_di when (NCE = '0' and NOE = '0') else (others => 'Z');
   
   -- bus sampling process
   process(clk) begin
     if rising_edge(clk) then
-      noe_reg <= NOE;
-      nce_reg <= NCE;
-      nbl_reg <= NBL;
+      d_reg <= D;
+      a_reg <= get_addr(A);
       nwe_reg <= nwe_reg(0) & NWE;
     end if;
   end process;
   
-  -- main process
+  -- BRAM WE logic. Will be activate 1 clock after WE goes down
   process(clk) begin
     if rising_edge(clk) then
-      if (NCE = '1') then
-        state <= IDLE;
-        bram_we <= "0";
-        bram_ce <= '0';
+      if (nwe_reg = "10") then
+         bram_we  <= "1";
       else
-        case state is
-        when IDLE =>
-          if (NOE = '0') then
-            state <= ADSET;
-          elsif (nwe_reg = "01") then
-            bram_ce <= '1';
-            bram_we <= "1";
-            bram_a  <= get_addr(A);
-            bram_do <= D;
-            mmu_int <= mmu_check(A, NBL);
-            state <= FLUSH;
-          end if;
-          
-        when FLUSH =>
-          bram_we <= "0";
-          
-        when ADSET =>
-          mmu_int <= mmu_check(A, NBL);
-          bram_ce <= '1';
-          bram_a  <= get_addr(A);
-        end case;
-        
+         bram_we  <= "0";
       end if;
-    end if; -- clk
+    end if;
   end process;
+  
+  -- MMU process
+  process(clk) begin
+    if rising_edge(clk) then
+      if (NCE = '0') then
+        mmu_int <= mmu_check(A, NBL);
+      end if;
+    end if;
+  end process;
+
+  -- NCE process. Looks like hardwired variant works better
+  bram_ce <= not NCE;
+--  process(clk) begin
+--    if rising_edge(clk) then
+--      if (NCE = '1') then
+--        bram_ce <= '0';
+--      else
+--        bram_ce <= '1';
+--      end if;
+--    end if;
+--  end process;
+  
+  
 end beh;
 
 

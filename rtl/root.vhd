@@ -65,9 +65,9 @@ end root;
 
 architecture Behavioral of root is
 
-signal clk_180mhz  : std_logic;
+signal clk_170mhz : std_logic;
 signal clk_150mhz : std_logic;
-signal clk_130mhz : std_logic;
+signal clk_100mhz : std_logic;
 signal clk_locked : std_logic;
 
 -- wires for memspace to fsmc
@@ -94,9 +94,9 @@ begin
 	clk_src : entity work.clk_src port map (
 		CLK_IN1  => CLK_IN_27MHZ,
     
-  	CLK_OUT1 => clk_180mhz,
+  	CLK_OUT1 => clk_170mhz,
 		CLK_OUT2 => clk_150mhz,
-		CLK_OUT3 => clk_130mhz,
+		CLK_OUT3 => clk_100mhz,
     
 		LOCKED   => clk_locked
 	);
@@ -107,7 +107,7 @@ begin
     AW => FSMC_A_USED
   )
   port map (
-    clk_i     => clk_130mhz,
+    clk_i     => clk_100mhz,
 
     BRAM_FILL => STM_IO_MUL_DV,
     BRAM_DBG  => STM_IO_MUL_RDY,
@@ -129,7 +129,7 @@ begin
     )
     port map (
       --clk => FSMC_CLK,
-      clk => clk_180mhz,
+      clk => clk_170mhz,
       mmu_int => STM_IO_MMU_INT,
       
       A   => FSMC_A,
@@ -157,7 +157,7 @@ begin
       ena   => wire_bram_ce,
       clka  => wire_bram_clk,
 
-      -- port B connected to PWM      
+      -- port B connected to memtest assistant
       addrb => wire_memtest_a,
       dinb  => wire_memtest_do,
       doutb => wire_memtest_di,
