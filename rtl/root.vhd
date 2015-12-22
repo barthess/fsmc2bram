@@ -102,7 +102,7 @@ begin
 	);
 
 
-  ram_addr_test : entity work.ram_addr_test
+  memtest_assist : entity work.memtest_assist
   generic map (
     AW => FSMC_A_USED
   )

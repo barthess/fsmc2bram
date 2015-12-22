@@ -4,7 +4,7 @@ use ieee.std_logic_unsigned.all;
 use ieee.numeric_std.all;
 
 
-entity ram_addr_test is
+entity memtest_assist is
   generic (
     AW : positive
   );
@@ -21,10 +21,10 @@ entity ram_addr_test is
 		BRAM_EN     : out std_logic;   -- memory enable
 		BRAM_WE     : out std_logic_vector(0    downto 0)    -- memory write enable
   );
-end entity ram_addr_test;
+end entity memtest_assist;
 
 
-architecture rtl of ram_addr_test is
+architecture rtl of memtest_assist is
   signal addr_cnt : std_logic_vector (AW-1 downto 0);
 begin
 	BRAM_CLK <= clk_i;
